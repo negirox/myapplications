@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "adport-applications-client-side-solution",
+    "id": "f85ea8f9-d82f-4947-b311-231e926395c6",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.16.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "adport-applications description"
+      },
+      "longDescription": {
+        "default": "adport-applications description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "adport-applications Feature",
+        "description": "The feature that activates elements of the adport-applications solution.",
+        "id": "d5ee3a06-79bb-4037-951a-e8a9446a18c5",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/adport-applications.sppkg"
+  }
+}
