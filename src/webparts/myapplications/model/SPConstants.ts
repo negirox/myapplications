@@ -27,6 +27,6 @@ export const popupStyles = mergeStyleSets({
 export const ListNames = {
   UserMaster:'User Master',
   Applications: 'Applications',
-  UserApplications:'User Applications',
+  UserApplications:'UserApplications',
   AdminConfiguration : 'AdminConfiguration'
 }

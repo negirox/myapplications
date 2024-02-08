@@ -32,6 +32,7 @@ export class SPHelpers implements ISPHelper {
     public async getAdminConfiguration(props:any,noofRecords:number): Promise<AdminConfigurationsResponse> {
         const { selectedColumns, records, orderByColumn } = this._getAdminConfigurations(noofRecords);
         const ConfigUrl = `${props.webpartContext.pageContext.web.absoluteUrl}/_api/web/lists/GetByTitle('${props.adminUserlistName}')/Items?$select=${selectedColumns}${records}&$orderby=${orderByColumn}`;
+        console.log(ConfigUrl);
         return await this.getListData(ConfigUrl);
     }
     private _getUserConfigurations(noofRecords: number, email: string) {

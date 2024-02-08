@@ -1,4 +1,5 @@
 import { WebPartContext } from "@microsoft/sp-webpart-base";
+import { Applications } from "../../model/SPResponse";
 
 export interface IEditMyApplication
 {
@@ -6,4 +7,6 @@ export interface IEditMyApplication
     hidePopup:()=>void;
     applicationlistName?: string;
     userApplicationlistName?: string;
+    allapplications: Array<Applications>;
+    userApplicationListItems:Array<Applications>;
 }

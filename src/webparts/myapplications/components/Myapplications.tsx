@@ -8,9 +8,14 @@ import EditMyApplication from './edit/EditMyApplications';
 import { popupStyles } from '../model/SPConstants';
 import { SPHelpers } from '../helpers/SPhelpers';
 import { ISPHelper } from '../helpers/ISPhelper';
+import { IBusinessHelper } from '../../business/IBusinessHelper';
+import { BusinessHelper } from '../../business/BusinsessHelper';
+import { ApplicatioRecords } from '../model/ApplicationModel';
+import { ApplicationUI } from './application-ui/ApplicationsUI';
 const defaultApplicationToShow = 4;
 export default class Myapplications extends React.Component<IMyapplicationsProps, IMyApplicationState> {
   private _spHelper: ISPHelper;
+  private _bussinessHelper: IBusinessHelper;
   constructor(props: IMyapplicationsProps) {
     super(props);
     this.state = {
@@ -22,6 +27,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       itemCount: defaultApplicationToShow
     }
     this._spHelper = new SPHelpers(this.props.webpartContext.spHttpClient);
+    this._bussinessHelper = new BusinessHelper();
     this.hidePopup = this.hidePopup.bind(this);
     this._getUserApplications = this._getUserApplications.bind(this);
     this.loadMoreApplications = this.loadMoreApplications.bind(this);
@@ -30,7 +36,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     const userMasterData = await this._spHelper.getUserMaster(this.props, this.props.webpartContext.pageContext.user.email,1);
     const Allapplications = await this._spHelper.getApplications(this.props, 4999);
     const userApplications = await this._getUserApplications(1);
-    const adminApplications = await this._spHelper.getAdminConfiguration(this.props, 1);
+    const adminApplications = await this._spHelper.getAdminConfiguration(this.props, 4999);
     this.RenderUserApplications(Allapplications, userApplications, adminApplications,userMasterData);
     //setInterval(this.GetItems, 5000);
   }
@@ -40,31 +46,12 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
   }
   private RenderUserApplications(applications: ApplicationResponse, userApplications: UserApplicationsResponse,
     adminConfiguration: AdminConfigurationsResponse,userMasterData:UserMasterResponse) {
-    let renderedApplications: string[] = [];
-    let adminApplications: string[] = [];
-    let departmentApplications : string[] = [];
-    if (adminConfiguration.value.length > 0) {
-      adminApplications = adminConfiguration.value.filter(x => x.Title.toUpperCase() === 'All Users'.toUpperCase())[0].SelectedApplications.split(',');
-      if(userMasterData){
-        departmentApplications =  adminConfiguration.value.filter(x => x.Title.toUpperCase() === userMasterData.value[0].Department.toUpperCase())[0].SelectedApplications.split(',');
-      }
-    }
-    if (userApplications.value && userApplications.value.length > 0) {
-      const Userapplications = userApplications.value[0].UserSelectedApplications?.split(',');
-      const RemovedApplications = userApplications.value[0].UserRemovedApplications?.split(',');
-      renderedApplications = Userapplications.filter((n) => {
-        return RemovedApplications.indexOf(n) !== -1;
-      });
-    }
-    renderedApplications = renderedApplications.concat(adminApplications);
-    const userApplicationsToRender = applications.value.filter((a) => {
-      return renderedApplications.indexOf(a.Id.toString()) !== -1;
-    });
-    const applicationsToShow = applications.value.slice(0, defaultApplicationToShow);
+    const response: ApplicatioRecords = this._bussinessHelper.getUserApplications(applications,
+      userApplications,adminConfiguration,userMasterData,defaultApplicationToShow);
     this.setState({
-      userApplicationListItems: userApplicationsToRender,
-      applicationListItems: applicationsToShow,
-      allapplications: applications.value,
+      userApplicationListItems: response.userApplicationsToRender,
+      applicationListItems: response.applicationsToShow,
+      allapplications: response.allApplications,
       loading: false
     });
   }
@@ -118,6 +105,8 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
                     hidePopup={
                       this.hidePopup
                     }
+                    allapplications ={this.state.allapplications}
+                    userApplicationListItems = {this.state.userApplicationListItems}
                   />
                 </div>
               </FocusTrapZone>
@@ -137,7 +126,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
           <Spinner label={`Loading Applications ...`} size={SpinnerSize.large} />}
         {!this.state.loading && this.state.userApplicationListItems.map(x => {
           return (
-            this.renderTiles(x, isSearchBar)
+            ApplicationUI.renderTiles(x, this.props.dashBoardBackGroundColor)
           );
         })}
       </div>
