@@ -1,8 +1,7 @@
-import { Applications, UserApplications } from "../../model/SPResponse";
+import { Applications } from "../../model/SPResponse";
 
 export interface IEditApplicationState {
-    listItems: Array<Applications>;
-    userItems:Array<UserApplications>;
+    applicationListItems: Array<Applications>;
+    userApplicationListItems:Array<Applications>;
     loading:boolean;
 }
-  

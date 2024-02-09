@@ -2,8 +2,8 @@ import * as React from 'react';
 import styles from './Myapplications.module.scss';
 import { IMyapplicationsProps } from './IMyapplicationsProps';
 import { IMyApplicationState } from './IMyApplicationState';
-import { IconBase64, Applications, ApplicationResponse, UserApplicationsResponse, AdminConfigurationsResponse, UserMasterResponse } from '../model/SPResponse';
-import { DefaultButton, FocusTrapZone, Layer, Popup, Spinner, SpinnerSize } from 'office-ui-fabric-react';
+import { Applications, ApplicationResponse, UserApplicationsResponse, AdminConfigurationsResponse, UserMasterResponse } from '../model/SPResponse';
+import { DefaultButton, FocusTrapZone, Layer, Popup, SearchBox, Spinner, SpinnerSize } from 'office-ui-fabric-react';
 import EditMyApplication from './edit/EditMyApplications';
 import { popupStyles } from '../model/SPConstants';
 import { SPHelpers } from '../helpers/SPhelpers';
@@ -135,12 +135,15 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
   private LoadApplicationDashBoardWithSearchBar(myPinnedApplication: string, isSearchBar: boolean = false): JSX.Element {
     return <div>
       <h3 className="mt-5">{myPinnedApplication}</h3>
+      <div>
+        <SearchBox ></SearchBox>
+      </div>
       <div className={styles.tileContainer}>
         {this.state.loading &&
           <Spinner label={`Loading Applications ...`} size={SpinnerSize.large} />}
         {!this.state.loading && this.state.applicationListItems.map(x => {
           return (
-            this.renderTiles(x, isSearchBar)
+            ApplicationUI.renderTiles(x, this.props.dashBoardBackGroundColor)
           );
         })}
       </div>
@@ -152,7 +155,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     </div>;
   }
 
-  private renderTiles(x: Applications, isSearchbar: boolean): JSX.Element {
+/*   private renderTiles(x: Applications, isSearchbar: boolean): JSX.Element {
     return <div className={styles.tile} style={{ backgroundColor: this.props.tilesBackGroundColor }}>
       <span>
         <img className={styles.notificationImage} src={IconBase64} />
@@ -162,5 +165,5 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
         {x.Title?.length > 10 ? x.Title.substring(0, 10) + '...' : x.Title?.toUpperCase()}
       </h3>
     </div>;
-  }
+  } */
 }

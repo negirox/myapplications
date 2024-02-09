@@ -9,4 +9,5 @@ export interface IEditMyApplication
     userApplicationlistName?: string;
     allapplications: Array<Applications>;
     userApplicationListItems:Array<Applications>;
+    dashBoardBackGroundColor?:string;
 }

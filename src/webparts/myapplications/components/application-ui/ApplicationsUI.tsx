@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Applications, IconBase64 } from "../../model/SPResponse";
 import styles from './../Myapplications.module.scss';
+import { Checkbox } from "office-ui-fabric-react";
 export class ApplicationUI extends React.Component{
     public static renderTiles(x: Applications, tilesBackGroundColor: string): JSX.Element {
         return <div className={styles.tile} style={{ backgroundColor: tilesBackGroundColor }}>
@@ -20,7 +21,7 @@ export class ApplicationUI extends React.Component{
             {x.Title?.length > 10 ? x.Title.substring(0, 10) + '...' : x.Title?.toUpperCase()}
           </h3>
           <span>
-            <img className={styles.notificationImage} src={IconBase64} />
+            <Checkbox className={styles.applicationCheckBox} ></Checkbox>
           </span>
         </div>;
     }
