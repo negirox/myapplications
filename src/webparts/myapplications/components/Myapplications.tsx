@@ -12,10 +12,12 @@ import { IBusinessHelper } from '../../business/IBusinessHelper';
 import { BusinessHelper } from '../../business/BusinsessHelper';
 import { ApplicatioRecords } from '../model/ApplicationModel';
 import { ApplicationUI } from './application-ui/ApplicationsUI';
+import Dragging from './drag-drop/Dragging';
 const defaultApplicationToShow = 4;
 export default class Myapplications extends React.Component<IMyapplicationsProps, IMyApplicationState> {
   private _spHelper: ISPHelper;
   private _bussinessHelper: IBusinessHelper;
+  private _backUp: Array<Applications>;
   constructor(props: IMyapplicationsProps) {
     super(props);
     this.state = {
@@ -26,11 +28,13 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       isPopupVisible: false,
       itemCount: defaultApplicationToShow
     }
+    this._backUp =new Array<Applications>();
     this._spHelper = new SPHelpers(this.props.webpartContext.spHttpClient);
     this._bussinessHelper = new BusinessHelper();
     this.hidePopup = this.hidePopup.bind(this);
     this._getUserApplications = this._getUserApplications.bind(this);
     this.loadMoreApplications = this.loadMoreApplications.bind(this);
+    this.SearchApplications = this.SearchApplications.bind(this);
   }
   async componentDidMount(): Promise<void> {
     const userMasterData = await this._spHelper.getUserMaster(this.props, this.props.webpartContext.pageContext.user.email,1);
@@ -38,6 +42,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     const userApplications = await this._getUserApplications(1);
     const adminApplications = await this._spHelper.getAdminConfiguration(this.props, 4999);
     this.RenderUserApplications(Allapplications, userApplications, adminApplications,userMasterData);
+    this._backUp = [...this.state.applicationListItems];
     //setInterval(this.GetItems, 5000);
   }
   private async _getUserApplications(noofRecords: number): Promise<UserApplicationsResponse> {
@@ -68,6 +73,19 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       loading: false
     });
   }
+  private SearchApplications(searchValue:string){
+    this.SearchApps(searchValue);
+  }
+  private SearchApps(searchValue: string) {
+    if (searchValue.length > 0) {
+      const apps = this.state.allapplications.filter(x => x.Title.toUpperCase().indexOf(searchValue.toUpperCase()) > -1);
+      this.setState({ applicationListItems: apps });
+    }
+    else {
+      this.setState({ applicationListItems: [...this._backUp] });
+    }
+  }
+
   public render(): React.ReactElement<IMyapplicationsProps> {
     const myPinnedApplication = `My Pinned Applications`;
     const allApplications = `All Applications`;
@@ -84,6 +102,9 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
           backgroundColor: this.props.dashBoardBackGroundColor,
           border: this.props.showBorder === true ? '1px solid #ccc' : 'none'
         }}>
+          <div>
+            <Dragging description='dragginevents'></Dragging>
+          </div>
           <div>
             {this.LoadApplicationDashBoard(myPinnedApplication)}
           </div>
@@ -123,7 +144,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       <h3 className="mt-5">{myPinnedApplication}</h3>
       <div className={styles.tileContainer}>
         {this.state.loading &&
-          <Spinner label={`Loading Applications ...`} size={SpinnerSize.large} />}
+          <Spinner label={`Loading User Applications ...`} size={SpinnerSize.large} />}
         {!this.state.loading && this.state.userApplicationListItems.map(x => {
           return (
             ApplicationUI.renderTiles(x, this.props.dashBoardBackGroundColor)
@@ -136,7 +157,10 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     return <div>
       <h3 className="mt-5">{myPinnedApplication}</h3>
       <div>
-        <SearchBox ></SearchBox>
+        <SearchBox onSearch={(searchValue)=>{this.SearchApplications(searchValue);}}
+        onChange={
+          (_,searchValue)=>{this.SearchApplications(searchValue);}
+        }></SearchBox>
       </div>
       <div className={styles.tileContainer}>
         {this.state.loading &&

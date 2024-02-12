@@ -40,10 +40,10 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
           <h3 className="mt-5">{myPinnedApplication}</h3>
           <div className={styles.tileContainer}>
             {this.state.loading &&
-              <Spinner label={`Loading Applications ...`} size={SpinnerSize.large} />}
+              <Spinner label={`Loading User Applications ...`} size={SpinnerSize.large} />}
             {!this.state.loading && this.state.userApplicationListItems.map(x => {
               return (
-                ApplicationUI.renderTilesWithCheckBox(x, '#fff')
+                ApplicationUI.renderTiles(x, this.props.dashBoardBackGroundColor)
               );
             })}
           </div>
@@ -60,7 +60,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
               <Spinner label={`Loading Applications ...`} size={SpinnerSize.large} />}
             {!this.state.loading && this.state.applicationListItems.map(x => {
               return (
-                ApplicationUI.renderTiles(x, this.props.dashBoardBackGroundColor)
+                ApplicationUI.renderTilesWithCheckBox(x, '#fff')
               );
             })}
           </div>
