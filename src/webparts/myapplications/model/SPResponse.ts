@@ -19,7 +19,8 @@ export interface Applications {
     Title:string,
     IconURL: string,
     IsVisibleOnPage: boolean,
-    IsAdminPushed:boolean
+    IsAdminPushed:boolean,
+    order:number;
 }
 export interface UserApplications {
   Id: number,

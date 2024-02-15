@@ -12,7 +12,6 @@ import { IBusinessHelper } from '../../business/IBusinessHelper';
 import { BusinessHelper } from '../../business/BusinsessHelper';
 import { ApplicatioRecords } from '../model/ApplicationModel';
 import { ApplicationUI } from './application-ui/ApplicationsUI';
-import Dragging from './drag-drop/Dragging';
 const defaultApplicationToShow = 4;
 export default class Myapplications extends React.Component<IMyapplicationsProps, IMyApplicationState> {
   private _spHelper: ISPHelper;
@@ -102,9 +101,6 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
           backgroundColor: this.props.dashBoardBackGroundColor,
           border: this.props.showBorder === true ? '1px solid #ccc' : 'none'
         }}>
-          <div>
-            <Dragging description='dragginevents'></Dragging>
-          </div>
           <div>
             {this.LoadApplicationDashBoard(myPinnedApplication)}
           </div>

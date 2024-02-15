@@ -37,7 +37,7 @@ export class SPHelpers implements ISPHelper {
     }
     private _getUserConfigurations(noofRecords: number, email: string) {
         const records = `&$top=${noofRecords}`;
-        const selectedColumns = `Title,Id,UserSelectedApplications,UserRemovedApplications`;
+        const selectedColumns = `Title,Id,UserSelectedApplications,UserRemovedApplications,ApplicationOrder`;
         const filterColumn = 'Title';
         const filterType = 'eq';
         const filterValue = email;
