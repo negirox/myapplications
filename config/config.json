@@ -13,6 +13,7 @@
   },
   "externals": {},
   "localizedResources": {
-    "MyapplicationsWebPartStrings": "lib/webparts/myapplications/loc/{locale}.js"
+    "MyapplicationsWebPartStrings": "lib/webparts/myapplications/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js"
   }
 }

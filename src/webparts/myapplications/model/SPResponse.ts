@@ -21,18 +21,22 @@ export interface Applications {
     IsVisibleOnPage: boolean,
     IsAdminPushed:boolean,
     order:number;
+    isSelected?:boolean
 }
-export interface UserApplications {
-  Id: number,
-  Title:string,
+export interface UserApplicationsBase{
   UserSelectedApplications: string,
   UserRemovedApplications: string,
-  ApplicationOrder:string
+  ApplicationOrder:string,
+  Title?:string,
+}
+export interface UserApplications extends UserApplicationsBase {
+  Id: number
 }
 export interface AdminConfiguration {
   Id: number,
   Title:string,
-  SelectedApplications: string
+  SelectedApplications: string,
+  SelectedAppsId:number[]
 }
 export interface UserMaster {
   Id: number,

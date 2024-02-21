@@ -38,7 +38,8 @@ export class ApplicationUI extends React.Component{
             {x.Title?.length > 10 ? x.Title.substring(0, 10) + '...' : x.Title?.toUpperCase()}
           </h3>
           <span>
-            <Checkbox id={`appcheckBox_${x.Id}`} className={styles.applicationCheckBox} onChange={handleCheckBox}></Checkbox>
+            <Checkbox id={`appcheckBox_${x.Id}`} checked={x.isSelected}
+             className={styles.applicationCheckBox} onChange={handleCheckBox}></Checkbox>
           </span>
         </div>;
     }

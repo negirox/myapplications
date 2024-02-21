@@ -12,13 +12,17 @@ import { IBusinessHelper } from '../../business/IBusinessHelper';
 import { BusinessHelper } from '../../business/BusinsessHelper';
 import { ApplicatioRecords } from '../model/ApplicationModel';
 import { ApplicationUI } from './application-ui/ApplicationsUI';
-const defaultApplicationToShow = 4;
+import { Utility } from '../helpers/Utility';
+let defaultApplicationToShow = 4;
 export default class Myapplications extends React.Component<IMyapplicationsProps, IMyApplicationState> {
   private _spHelper: ISPHelper;
   private _bussinessHelper: IBusinessHelper;
   private _backUp: Array<Applications>;
+  private _backUpApps: ApplicationResponse;
+  private dynamicId: string;
   constructor(props: IMyapplicationsProps) {
     super(props);
+    defaultApplicationToShow = this.props.itemCount;
     this.state = {
       applicationListItems: new Array<Applications>(),
       allapplications: new Array<Applications>(),
@@ -28,6 +32,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       itemCount: defaultApplicationToShow
     }
     this._backUp =new Array<Applications>();
+    this.dynamicId = `ImageFullWidthContainer-` + Utility.GetUniqueId();
     this._spHelper = new SPHelpers(this.props.webpartContext.spHttpClient);
     this._bussinessHelper = new BusinessHelper();
     this.hidePopup = this.hidePopup.bind(this);
@@ -36,14 +41,20 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     this.SearchApplications = this.SearchApplications.bind(this);
   }
   async componentDidMount(): Promise<void> {
-    const userMasterData = await this._spHelper.getUserMaster(this.props, this.props.webpartContext.pageContext.user.email,1);
     const Allapplications = await this._spHelper.getApplications(this.props, 4999);
-    const userApplications = await this._getUserApplications(1);
-    const adminApplications = await this._spHelper.getAdminConfiguration(this.props, 4999);
-    this.RenderUserApplications(Allapplications, userApplications, adminApplications,userMasterData);
+    this._backUpApps = Allapplications;
+    await this.LoadorRefreshApps(Allapplications);
     this._backUp = [...this.state.applicationListItems];
+    console.log(this.dynamicId);
     //setInterval(this.GetItems, 5000);
   }
+  public async LoadorRefreshApps(Allapplications: ApplicationResponse) {
+    const userMasterData = await this._spHelper.getUserMaster(this.props, this.props.webpartContext.pageContext.user.email, 1);
+    const userApplications = await this._getUserApplications(1);
+    const adminApplications = await this._spHelper.getAdminConfiguration(this.props, 4999);
+    this.RenderUserApplications(Allapplications, userApplications, adminApplications, userMasterData);
+  }
+
   private async _getUserApplications(noofRecords: number): Promise<UserApplicationsResponse> {
     const filterValue = this.props.webpartContext.pageContext.user.email;
     return await this._spHelper.getUserApplications(this.props, filterValue, noofRecords);
@@ -59,7 +70,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       loading: false
     });
   }
-  private hidePopup(): void {
+  public hidePopup(): void {
     this.setState({
       isPopupVisible: false
     });
@@ -118,12 +129,20 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
               <FocusTrapZone>
                 <div className={popupStyles.content}>
                   <EditMyApplication
-                    webPartContext={this.props.webpartContext}
+                    webpartContext={this.props.webpartContext}
                     hidePopup={
                       this.hidePopup
                     }
+                    loadorRefresh ={
+                     ()=>{this.LoadorRefreshApps(this._backUpApps);}
+                    }
                     allapplications ={this.state.allapplications}
                     userApplicationListItems = {this.state.userApplicationListItems}
+                    spHelper={this._spHelper}
+                    applicationlistName= {this.props.applicationlistName}
+                    userApplicationlistName= {this.props.userApplicationlistName}
+                    adminUserlistName = {this.props.adminUserlistName }
+                    userMasterList ={this.props.userMasterList}
                   />
                 </div>
               </FocusTrapZone>
@@ -152,11 +171,12 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
   private LoadApplicationDashBoardWithSearchBar(myPinnedApplication: string, isSearchBar: boolean = false): JSX.Element {
     return <div>
       <h3 className="mt-5">{myPinnedApplication}</h3>
-      <div>
+      <div className={styles.searchContainer}>
         <SearchBox onSearch={(searchValue)=>{this.SearchApplications(searchValue);}}
         onChange={
           (_,searchValue)=>{this.SearchApplications(searchValue);}
-        }></SearchBox>
+        }
+        className={styles.searchBox}></SearchBox>
       </div>
       <div className={styles.tileContainer}>
         {this.state.loading &&
@@ -174,16 +194,4 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       </div>
     </div>;
   }
-
-/*   private renderTiles(x: Applications, isSearchbar: boolean): JSX.Element {
-    return <div className={styles.tile} style={{ backgroundColor: this.props.tilesBackGroundColor }}>
-      <span>
-        <img className={styles.notificationImage} src={IconBase64} />
-      </span>
-      <img className={styles.tileimg} src={x.IconURL} alt={x.Title} />
-      <h3 className="description" title={x.Title?.toUpperCase()}>
-        {x.Title?.length > 10 ? x.Title.substring(0, 10) + '...' : x.Title?.toUpperCase()}
-      </h3>
-    </div>;
-  } */
 }

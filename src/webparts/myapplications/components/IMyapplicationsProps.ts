@@ -8,5 +8,6 @@ export interface IMyapplicationsProps {
   webpartContext:WebPartContext;
   dashBoardBackGroundColor:string;
   tilesBackGroundColor:string;
-  showBorder:boolean
+  showBorder:boolean;
+  itemCount:number;
 }
