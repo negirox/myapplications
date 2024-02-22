@@ -18,7 +18,7 @@ export const popupStyles = mergeStyleSets({
       position: 'absolute',
       top: '50%',
       transform: 'translate(-50%, -50%)',
-      borderTop: '4px solid rgb(0, 85, 150)',
+      //borderTop: '4px solid rgb(0, 85, 150)',
       maxHeight: '70%',
       overflow: 'auto',
       //scrollbar: "thin",

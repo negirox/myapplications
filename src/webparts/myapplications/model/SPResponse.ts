@@ -19,6 +19,7 @@ export interface Applications {
     Title:string,
     IconURL: string,
     IsVisibleOnPage: boolean,
+    ApplicationURL:string,
     IsAdminPushed:boolean,
     order:number;
     isSelected?:boolean

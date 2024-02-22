@@ -277,6 +277,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
     private LoadApplicationDashBoard(myPinnedApplication: string, isSearchBar: boolean = false): JSX.Element {
         return <div>
             <h3 className="mt-5">{myPinnedApplication}</h3>
+            <span>Drag and drop to reorder</span>
             <div className={styles.tileContainer}>
                 {this.state.loading &&
                     <Spinner label={`Loading User Applications ...`} size={SpinnerSize.large} />}
@@ -294,6 +295,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
     private LoadApplicationDashBoardWithSearchBar(myPinnedApplication: string, isSearchBar: boolean = false): JSX.Element {
         return <div>
             <h3 className="mt-5">{myPinnedApplication}</h3>
+            <span>Select to pin a applications</span>
             <div className={styles.searchContainer}>
                 <SearchBox onSearch={(searchValue) => { this.SearchApplications(searchValue); }}
                     onChange={

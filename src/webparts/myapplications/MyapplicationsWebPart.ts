@@ -14,9 +14,8 @@ import Myapplications from './components/Myapplications';
 import { IMyapplicationsProps } from './components/IMyapplicationsProps';
 import { ListNames } from './model/SPConstants';
 import { IODataList } from '@microsoft/sp-odata-types';
-import {
-  SPHttpClient
-} from '@microsoft/sp-http';
+import { ISPHelper } from './helpers/ISPhelper';
+import { SPHelpers } from './helpers/SPhelpers';
 //import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from '@pnp/spfx-property-controls/lib/PropertyFieldListPicker';
 
 export interface IMyapplicationsWebPartProps {
@@ -28,10 +27,14 @@ export interface IMyapplicationsWebPartProps {
   tilesBackGroundColor: string;
   showBorder: boolean;
   itemCount: number;
+  imgURL: string;
+  bannerTitle: string;
+  bannerDescription: string;
 }
 
 export default class MyapplicationsWebPart extends BaseClientSideWebPart<IMyapplicationsWebPartProps> {
-  dropdownOptions: IPropertyPaneDropdownOption[];
+  private dropdownOptions: IPropertyPaneDropdownOption[];
+  private spHelper:ISPHelper;
   public render(): void {
     const element: React.ReactElement<IMyapplicationsProps> = React.createElement(
       Myapplications,
@@ -44,7 +47,10 @@ export default class MyapplicationsWebPart extends BaseClientSideWebPart<IMyappl
         dashBoardBackGroundColor: this.properties.dashBoardBackGroundColor ?? '#fff',
         tilesBackGroundColor: this.properties.tilesBackGroundColor ?? '#fff',
         showBorder: this.properties.showBorder ?? false,
-        itemCount:this.properties.itemCount ?? 8
+        itemCount:this.properties.itemCount ?? 8,
+        imgURL:this.properties.imgURL ?? this.previewImageUrl,
+        bannerTitle: this.properties.bannerTitle ?? 'Welcome',
+        bannerDescription: this.properties.bannerDescription ?? 'Hello',
       }
     );
 
@@ -52,24 +58,16 @@ export default class MyapplicationsWebPart extends BaseClientSideWebPart<IMyappl
   }
 
   protected async onInit(): Promise<void> {
+    this.spHelper = new SPHelpers(this.context.spHttpClient);
     const options = await this.fetchOptions();
     this.dropdownOptions = options;
   }
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
   }
-  private async fetchLists(url: string): Promise<any> {
-    const response = await this.context.spHttpClient.get(url, SPHttpClient.configurations.v1);
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.log("WARNING - failed to hit URL " + url + ". Error = " + response.statusText);
-      return null;
-    }
-  }
   private async fetchOptions(): Promise<IPropertyPaneDropdownOption[]> {
     var url = this.context.pageContext.web.absoluteUrl + `/_api/web/lists?$select=Title,Id&$filter=Hidden eq false`;
-    const response = await this.fetchLists(url);
+    const response = await this.spHelper.getListData(url);
     var options: Array<IPropertyPaneDropdownOption> = new Array<IPropertyPaneDropdownOption>();
     response.value.map((list: IODataList) => {
       options.push({ key: list.Title, text: list.Title });
@@ -87,7 +85,8 @@ export default class MyapplicationsWebPart extends BaseClientSideWebPart<IMyappl
         case 'userApplicationlistName': this.properties.userApplicationlistName = newValue; break;
         case 'adminUserlistName': this.properties.adminUserlistName = newValue; break;
         case 'userMasterList': this.properties.userMasterList = newValue; break;
-        case 'itemCount': this.properties.itemCount = parseInt(newValue); break;
+      //  case 'itemCount': this.properties.itemCount = parseInt(newValue); break;
+        //case 'imgURL': this.properties.imgURL = newValue; break;
       }
       // push new list value
       super.onPropertyPaneFieldChanged(propertyPath, oldValue, newValue);
@@ -111,6 +110,15 @@ export default class MyapplicationsWebPart extends BaseClientSideWebPart<IMyappl
             {
               groupName: strings.BasicGroupName,
               groupFields: [
+                PropertyPaneTextField('imgURL', {
+                  label: 'Enter Image Url'
+                }),
+                PropertyPaneTextField('bannerTitle', {
+                  label: 'Enter Title'
+                }),
+                PropertyPaneTextField('bannerDescription', {
+                  label: 'Enter Description'
+                }),
                 PropertyPaneDropdown('applicationlistName', {
                   label: 'Select Application list',
                   options: [...this.dropdownOptions]

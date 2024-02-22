@@ -10,4 +10,7 @@ export interface IMyapplicationsProps {
   tilesBackGroundColor:string;
   showBorder:boolean;
   itemCount:number;
+  imgURL: string;
+  bannerTitle: string;
+  bannerDescription: string;
 }

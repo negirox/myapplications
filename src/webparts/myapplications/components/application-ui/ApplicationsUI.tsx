@@ -6,7 +6,7 @@ export class ApplicationUI extends React.Component{
     public static renderTiles(x: Applications, tilesBackGroundColor: string): JSX.Element {
         return <div className={styles.tile} style={{ backgroundColor: tilesBackGroundColor }}>
           <span>
-            <a href='#'><img className={styles.notificationImage} src={IconBase64} /></a>
+            <a href={x.ApplicationURL} rel="noopener" target="_blank"><img className={styles.notificationImage} src={IconBase64} /></a>
           </span>
           <img className={styles.tileimg} src={x.IconURL} alt={x.Title} />
           <h3 className="description" title={x.Title?.toUpperCase()}>
@@ -21,9 +21,9 @@ export class ApplicationUI extends React.Component{
         onDragOver={(ev) => ev.preventDefault()}
         onDragStart={handleDrag}
         onDrop={handleDrop}>
-          <span>
+        {/*   <span>
             <a href='#'><img className={styles.notificationImage} src={IconBase64} /></a>
-          </span>
+          </span> */}
           <img className={styles.tileimg} src={x.IconURL} alt={x.Title} />
           <h3 className="description" title={x.Title?.toUpperCase()}>
             {x.Title?.length > 10 ? x.Title.substring(0, 10) + '...' : x.Title?.toUpperCase()}

@@ -71,7 +71,7 @@ export class SPHelpers implements ISPHelper {
     }
     private _getConfigForApplications(noofRecords: number) {
         const records = `&$top=${noofRecords}`;
-        const selectedColumns = `Title,Id,IconURL,IsVisibleOnPage`;
+        const selectedColumns = `Title,Id,IconURL,IsVisibleOnPage,ApplicationURL`;
         const filterType = 'eq';
         const filterColumn = 'IsVisibleOnPage';
         const filterValue = 1;
