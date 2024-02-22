@@ -105,8 +105,8 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       <section>
         <div>
           <div className={styles.banner} id={this.dynamicId} style={{backgroundImage:`url('${this.props.imgURL}')`}}>
-            <h3>{this.props.bannerTitle}</h3>
-            <p>{this.props.bannerDescription}</p>
+            <h2 className={styles.bannerTitle}>{this.props.bannerTitle}</h2>
+            <p className={styles.bannerDescription}>{this.props.bannerDescription}</p>
             <DefaultButton onClick={() => {
               this.setState({ isPopupVisible: true });
             }}>

@@ -55,7 +55,7 @@ export class BusinessHelper implements IBusinessHelper {
                 Allapps = Allapps.concat(selectedAdminApps);
             }
             if (usermasterData && usermasterData.length > 0) {
-                const departMentApps = adminApps.filter(x => x.Title.toUpperCase() === usermasterData[0].Department.toUpperCase());
+                const departMentApps = adminApps.filter(x => x.Title.toUpperCase() === usermasterData[0].UserCluster.toUpperCase());
                 if (departMentApps && departMentApps.length > 0) {
                     const selectedDepartmentApps: string[] = allUserApps[0].SelectedAppsId.toString().split(',');
                     Allapps = Allapps.concat(selectedDepartmentApps);
@@ -128,7 +128,7 @@ export class BusinessHelper implements IBusinessHelper {
         }
         if (userMasterData.value.length > 0) {
             const departmentApplicationsRecords = adminConfiguration.value.
-                filter(x => x.Title.toUpperCase() === userMasterData.value[0].Department.toUpperCase());
+                filter(x => x.Title.toUpperCase() === userMasterData.value[0].UserCluster.toUpperCase());
             if (departmentApplicationsRecords && departmentApplicationsRecords.length > 0) {
                 departmentApplications = departmentApplicationsRecords[0].SelectedAppsId.toString().split(',');
                 adminApplications = adminApplications.concat(departmentApplications);
