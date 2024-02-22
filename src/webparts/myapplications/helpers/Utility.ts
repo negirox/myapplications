@@ -1,6 +1,6 @@
 import * as jQuery from 'jquery';
 export class Utility{
-    public static GetIdFromString(objId:string):Number{
+    public static GetIdFromString(objId:string):number{
         if(objId === undefined && objId.length === 0){
             return 0;
         }

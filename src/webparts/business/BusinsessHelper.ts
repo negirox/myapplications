@@ -47,7 +47,7 @@ export class BusinessHelper implements IBusinessHelper {
         }
         return postObj;
     }
-    private GetAdminApps(adminApps: AdminConfiguration[], Allapps: string[], usermasterData: UserMaster[]) {
+    private GetAdminApps(adminApps: AdminConfiguration[], Allapps: string[], usermasterData: UserMaster[]):string[] {
         if (adminApps.length > 0) {
             const allUserApps = adminApps.filter(x => x.Title.toUpperCase() === 'All Users'.toUpperCase());
             if (allUserApps.length > 0) {

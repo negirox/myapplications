@@ -62,9 +62,9 @@ export default class Dragging extends React.Component<IDraggingProps, IDraggingS
   }
 
   private _onDrop(ev: React.DragEvent<HTMLDivElement>, targetcategory: string): void {
-    var data = ev.dataTransfer.getData("Text");
+    const data = ev.dataTransfer.getData("Text");
     ev.preventDefault();
-    var item = this.state.items.filter((i) => i.name === data);
+    const item = this.state.items.filter((i) => i.name === data);
     if (item.length === 1 && item[0].category !== targetcategory) {
       const newitems = clone(this.state.items);
       const itemindex = findIndex(newitems, i => i.name === data);

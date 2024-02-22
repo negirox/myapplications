@@ -6,7 +6,7 @@ export class ApplicationUI extends React.Component{
     public static renderTiles(x: Applications, tilesBackGroundColor: string): JSX.Element {
         return <div className={styles.tile} style={{ backgroundColor: tilesBackGroundColor }}>
           <span>
-            <a href={x.ApplicationURL} rel="noopener" target="_blank"><img className={styles.notificationImage} src={IconBase64} /></a>
+            <a href={x.ApplicationURL} rel="noopener noreferrer" target="_blank"><img className={styles.notificationImage} src={IconBase64} /></a>
           </span>
           <img className={styles.tileimg} src={x.IconURL} alt={x.Title} />
           <h3 className="description" title={x.Title?.toUpperCase()}>
@@ -39,7 +39,7 @@ export class ApplicationUI extends React.Component{
           </h3>
           <span>
             <Checkbox id={`appcheckBox_${x.Id}`} checked={x.isSelected}
-             className={styles.applicationCheckBox} onChange={handleCheckBox}></Checkbox>
+             className={styles.applicationCheckBox} onChange={handleCheckBox} />
           </span>
         </div>;
     }

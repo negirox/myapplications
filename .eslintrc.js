@@ -327,7 +327,8 @@ module.exports = {
         "no-extra-semi": 0,
         "@typescript-eslint/no-extra-semi": 0,
         "no-empty-function": 0,
-        "@typescript-eslint/no-empty-function": 0
+        "@typescript-eslint/no-empty-function": 0,
+        "@typescript-eslint/no-explicit-any":0
       }
     },
     {

@@ -48,7 +48,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     console.log(this.dynamicId);
     //setInterval(this.GetItems, 5000);
   }
-  public async LoadorRefreshApps(Allapplications: ApplicationResponse) {
+  public async LoadorRefreshApps(Allapplications: ApplicationResponse):Promise<void> {
     const userMasterData = await this._spHelper.getUserMaster(this.props, this.props.webpartContext.pageContext.user.email, 1);
     const userApplications = await this._getUserApplications(1);
     const adminApplications = await this._spHelper.getAdminConfiguration(this.props, 4999);
@@ -60,7 +60,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
     return await this._spHelper.getUserApplications(this.props, filterValue, noofRecords);
   }
   private RenderUserApplications(applications: ApplicationResponse, userApplications: UserApplicationsResponse,
-    adminConfiguration: AdminConfigurationsResponse, userMasterData: UserMasterResponse) {
+    adminConfiguration: AdminConfigurationsResponse, userMasterData: UserMasterResponse):void {
     const response: ApplicatioRecords = this._bussinessHelper.getUserApplications(applications,
       userApplications, adminConfiguration, userMasterData, defaultApplicationToShow);
     this.setState({
@@ -85,10 +85,10 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
       loading: false
     });
   }
-  private SearchApplications(searchValue: string) {
+  private SearchApplications(searchValue: string):void {
     this.SearchApps(searchValue);
   }
-  private SearchApps(searchValue: string) {
+  private SearchApps(searchValue: string):void {
     if (searchValue.length > 0) {
       const apps = this.state.allapplications.filter(x => x.Title.toUpperCase().indexOf(searchValue.toUpperCase()) > -1);
       this.setState({ applicationListItems: apps });
@@ -143,7 +143,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
                       this.hidePopup
                     }
                     loadorRefresh={
-                      () => { this.LoadorRefreshApps(this._backUpApps); }
+                      async () => { await this.LoadorRefreshApps(this._backUpApps); }
                     }
                     allapplications={this.state.allapplications}
                     userApplicationListItems={this.state.userApplicationListItems}
@@ -185,7 +185,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
           onChange={
             (_, searchValue) => { this.SearchApplications(searchValue); }
           }
-          className={styles.searchBox}></SearchBox>
+          className={styles.searchBox} />
       </div>
       <div className={styles.tileContainer}>
         {this.state.loading &&

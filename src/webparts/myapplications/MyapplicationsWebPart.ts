@@ -66,9 +66,9 @@ export default class MyapplicationsWebPart extends BaseClientSideWebPart<IMyappl
     ReactDom.unmountComponentAtNode(this.domElement);
   }
   private async fetchOptions(): Promise<IPropertyPaneDropdownOption[]> {
-    var url = this.context.pageContext.web.absoluteUrl + `/_api/web/lists?$select=Title,Id&$filter=Hidden eq false`;
+    const url = this.context.pageContext.web.absoluteUrl + `/_api/web/lists?$select=Title,Id&$filter=Hidden eq false`;
     const response = await this.spHelper.getListData(url);
-    var options: Array<IPropertyPaneDropdownOption> = new Array<IPropertyPaneDropdownOption>();
+    const options: Array<IPropertyPaneDropdownOption> = new Array<IPropertyPaneDropdownOption>();
     response.value.map((list: IODataList) => {
       options.push({ key: list.Title, text: list.Title });
     });

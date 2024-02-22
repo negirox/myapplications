@@ -11,13 +11,13 @@ export class SPHelpers implements ISPHelper {
     constructor(client: SPHttpClient) {
         this._client = client;
     }
-    public async putUserApps(props: any, itemId: number, postObj: Object): Promise<boolean> {
+    public async putUserApps(props: any, itemId: number, postObj: object): Promise<boolean> {
         const ConfigUrl = `${props.webpartContext.pageContext.web.absoluteUrl}/_api/web/lists/GetByTitle('${props.userApplicationlistName}')/Items(${itemId})`;
         const response = await this.putListData(ConfigUrl, JSON.stringify(postObj));
         console.log(response);
         return response.ok ? true :false;
     }
-    public async saveUserApps(props: any, postObj: Object): Promise<boolean> {
+    public async saveUserApps(props: any, postObj: object): Promise<boolean> {
         const ConfigUrl = `${props.webpartContext.pageContext.web.absoluteUrl}/_api/web/lists/GetByTitle('${props.userApplicationlistName}')/Items`;
         const response = await this.setListData(ConfigUrl, JSON.stringify(postObj));
         console.log(response);
@@ -45,7 +45,7 @@ export class SPHelpers implements ISPHelper {
         return await this.getListData(ConfigUrl);
     }
     public async getUserApplications(props: any, email: string, noofRecords: number): Promise<UserApplicationsResponse> {
-        const { filterCondition, selectedColumns, records, orderByColumn } = this._getUserConfigurations(noofRecords, email);
+        const { filterCondition, selectedColumns, records, orderByColumn } = this._getUserConfigurations({ noofRecords, email });
         const ConfigUrl = `${props.webpartContext.pageContext.web.absoluteUrl}/_api/web/lists/GetByTitle('${props.userApplicationlistName}')/Items?$filter=${filterCondition}&$select=${selectedColumns}${records}&$orderby=${orderByColumn}`;
         return await this.getListData(ConfigUrl);
     }
@@ -59,7 +59,7 @@ export class SPHelpers implements ISPHelper {
         const ConfigUrl = `${props.webpartContext.pageContext.web.absoluteUrl}/_api/web/lists/GetByTitle('${props.adminUserlistName}')/Items?$select=${selectedColumns}${records}&$orderby=${orderByColumn}`;
         return await this.getListData(ConfigUrl);
     }
-    private _getUserConfigurations(noofRecords: number, email: string) {
+    private _getUserConfigurations({ noofRecords, email }: { noofRecords: number; email: string; }): { filterCondition: string; selectedColumns: string; records: string; orderByColumn: string; } {
         const records = `&$top=${noofRecords}`;
         const selectedColumns = `Title,Id,UserSelectedApplications,UserRemovedApplications,ApplicationOrder`;
         const filterColumn = 'Title';
@@ -69,7 +69,7 @@ export class SPHelpers implements ISPHelper {
         const orderByColumn = `Id desc`;
         return { filterCondition, selectedColumns, records, orderByColumn };
     }
-    private _getConfigForApplications(noofRecords: number) {
+    private _getConfigForApplications(noofRecords: number): { filterCondition: string; selectedColumns: string; records: string; orderByColumn: string; } {
         const records = `&$top=${noofRecords}`;
         const selectedColumns = `Title,Id,IconURL,IsVisibleOnPage,ApplicationURL`;
         const filterType = 'eq';
@@ -79,13 +79,13 @@ export class SPHelpers implements ISPHelper {
         const orderByColumn = `Id desc`;
         return { filterCondition, selectedColumns, records, orderByColumn };
     }
-    private _getAdminConfigurations(noofRecords: number) {
+    private _getAdminConfigurations(noofRecords: number): { selectedColumns: string; records: string; orderByColumn: string; } {
         const records = `&$top=${noofRecords}`;
         const selectedColumns = `Title,Id,*`;
         const orderByColumn = `Id desc`;
         return { selectedColumns, records, orderByColumn };
     }
-    private _getUserMasterConfigurations(noofRecords: number, email: string) {
+    private _getUserMasterConfigurations(noofRecords: number, email: string): { filterCondition: string; selectedColumns: string; records: string; orderByColumn: string; } {
         const records = `&$top=${noofRecords}`;
         const selectedColumns = `Title,Id,Department,UserCluster,UserFullName,UserEmail,UserOperationCompany,Unit,Division,Location,JobTitle,DateOfJoining,DateOfBirth,ContractType,ContractExpiryDate,AccountExpiryDate,LineManagerName,LineManagerEmail,UserHasReportee`;
         const filterColumn = 'Title';

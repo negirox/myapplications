@@ -79,7 +79,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
             </section>
         )
     }
-    public async SaveUI() {
+    public async SaveUI():Promise<void> {
         const loggedInUserRecord: UserApplications = JSON.parse(localStorage.getItem('loggedInUserRecord'));
         const postObj: UserApplicationsBase = this._bussinessHelper.getUserPrefrenceData(this.state.userApplicationListItems,
             this._adminApplications, this.state.applicationListItems, this._userMasterdata.value);
@@ -139,10 +139,10 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
             this.setState({ userApplicationListItems: newBoxState });
         }
     };
-    private SearchApplications(searchValue: string) {
+    private SearchApplications(searchValue: string):void {
         this.SearchApps(searchValue);
     }
-    public SearchApps(searchValue: string) {
+    public SearchApps(searchValue: string):void {
         if (searchValue.length > 0) {
             const apps = this.state.applicationListItems.filter(x => x.Title.toUpperCase().indexOf(searchValue.toUpperCase()) > -1);
             this.setState({ applicationListItems: apps });
@@ -151,7 +151,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
             this.setState({ applicationListItems: [...this._backUp] });
         }
     }
-    public handleCheckBox(ev?: React.ChangeEvent, isChecked?: boolean) {
+    public handleCheckBox(ev?: React.ChangeEvent, isChecked?: boolean):void {
         const checkboxId = ev.target.id;
         const appId = Utility.GetIdFromString(checkboxId);
         const application = this.state.applicationListItems.filter((x) => x.Id === appId)[0];
@@ -263,7 +263,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
              }); */
         }
     }
-    private SetSelectedApps(element: Applications) {
+    private SetSelectedApps(element: Applications):void {
         const selectedApps = this.state.applicationListItems.filter(x => x.Id.toString() === element.Id.toString());
         if (selectedApps.length > 0) {
             selectedApps[0].isSelected = true;
@@ -300,7 +300,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
                 <SearchBox onSearch={(searchValue) => { this.SearchApplications(searchValue); }}
                     onChange={
                         (_, searchValue) => { this.SearchApplications(searchValue); }
-                    } className={styles.searchBox}></SearchBox>
+                    } className={styles.searchBox} />
             </div>
             <div className={styles.tileContainer}>
                 {this.state.loading &&
