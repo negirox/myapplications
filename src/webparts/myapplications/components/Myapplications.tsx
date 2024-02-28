@@ -187,7 +187,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
           }
           className={styles.searchBox} />
       </div>
-      <div className={styles.tileContainer}>
+      <div className={styles.tileContainerMain}>
         {this.state.loading &&
           <Spinner label={`Loading Applications ...`} size={SpinnerSize.large} />}
         {!this.state.loading && this.state.applicationListItems.map(x => {

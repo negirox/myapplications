@@ -154,10 +154,10 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
     public handleCheckBox(ev?: React.ChangeEvent, isChecked?: boolean):void {
         const checkboxId = ev.target.id;
         const appId = Utility.GetIdFromString(checkboxId);
-        const application = this.state.applicationListItems.filter((x) => x.Id === appId)[0];
+        const application = this._backUp.filter((x) => x.Id === appId)[0];
         const UserApplication = this.state.userApplicationListItems.filter((x) => x.Id === appId);
         const newApps = [];
-        const newApplications: Applications[] = [...this.state.applicationListItems];
+        const newApplications: Applications[] = [...this._backUp];
         if (UserApplication.length > 0) {
             if (isChecked) {
                 const oldUserApps = [...this.state.userApplicationListItems];

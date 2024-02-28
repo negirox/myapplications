@@ -75,3 +75,4 @@ export const putHeaders = {
   },
   body: ''
 }
+export const defaultTileIcon = `/SiteAssets/ADPorts/Common/defaulticon.png`;

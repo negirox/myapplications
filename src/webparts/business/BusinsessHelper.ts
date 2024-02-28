@@ -1,4 +1,5 @@
 
+import { Utility } from "../myapplications/helpers/Utility";
 import { ApplicatioRecords } from "../myapplications/model/ApplicationModel";
 import {
     AdminConfiguration, AdminConfigurationsResponse, ApplicationResponse, Applications,
@@ -28,7 +29,7 @@ export class BusinessHelper implements IBusinessHelper {
             const app = allApps[index];
             if(Allapps.indexOf(app.Id.toString()) > -1){
                 app.IsAdminPushed = true;
-                if(app.isSelected === false){
+                if(app.isSelected === false && userRemovedApps.indexOf('')){
                     userRemovedApps.push(app.Id.toString());
                 }
             }
@@ -36,6 +37,7 @@ export class BusinessHelper implements IBusinessHelper {
                 app.IsAdminPushed = false;
             }
         }
+        userRemovedApps = userRemovedApps.filter(Utility.UniQueItems);
         const userAppsToShow = userApps.filter((x)=>{
             return userRemovedApps.indexOf(x.Id.toString()) === -1
         });
@@ -75,6 +77,7 @@ export class BusinessHelper implements IBusinessHelper {
             ({ adminApplications, departmentApplications } = this._getAdminandDepartmentApplications(adminConfiguration, adminApplications, userMasterData, departmentApplications));
         }
         renderedApplications = renderedApplications.concat(adminApplications);
+        renderedApplications = this.removewithfilter(renderedApplications);
         let orders: string[] = [];
         //remove applications
         if (userApplications.value && userApplications.value.length > 0) {
@@ -86,19 +89,22 @@ export class BusinessHelper implements IBusinessHelper {
             return renderedApplications.indexOf(a.Id.toString()) !== -1;
         });
         userApplicationsToRender = userApplicationsToRender.filter(this.filterUniqueObjects);
+        const userApptoRender: Applications[] = [];
         if (orders !== undefined) {
             for (let index = 0; index < orders.length; index++) {
                 const orderNo = orders[index];
-                if(userApplicationsToRender[index])
+                if(userApplicationsToRender[index]){
                     userApplicationsToRender[index].order = parseInt(orderNo) ?? (index + 1);
+                    userApptoRender.push(userApplicationsToRender[index]);
+                }
             }
         }
+        userApplicationsToRender = userApptoRender.sort((a,b)=>a.order - b.order);
         const applicationsToShow = applications.value.slice(0, defaultApplicationToShow);
-
         const response: ApplicatioRecords = {
-            allApplications: applications.value,
-            applicationsToShow: applicationsToShow,
-            userApplicationsToRender: userApplicationsToRender
+            allApplications: Utility.sortArray(applications.value,'Title'),
+            applicationsToShow: Utility.sortArray(applicationsToShow,'Title'),
+            userApplicationsToRender: userApplicationsToRender// Utility.sortArray(userApplicationsToRender,'Title')
         }
         return response;
 
@@ -116,7 +122,7 @@ export class BusinessHelper implements IBusinessHelper {
                 tempApplications.push(x);
             }
         });
-        return tempApplications;
+        return tempApplications.filter(this.filterUniqueObjects);
     }
 
     private _getAdminandDepartmentApplications(adminConfiguration: AdminConfigurationsResponse,
@@ -138,5 +144,11 @@ export class BusinessHelper implements IBusinessHelper {
     }
     private filterUniqueObjects(value: any, index: any, array: string | any[]): boolean {
         return array.indexOf(value) === index;
+    }
+    private removewithfilter(arr:any[]):any[] {
+        const outputArray = arr.filter(function (v:string, i:number, self:any[]) {
+            return i === self.indexOf(v);
+        });
+        return outputArray;
     }
 }

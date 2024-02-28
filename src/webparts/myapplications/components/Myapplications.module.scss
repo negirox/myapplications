@@ -55,6 +55,13 @@
   overflow: auto;
   scrollbar-color: #c0bebe;
 }
+.tileContainerMain {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  padding: .635rem;
+  max-height: 18.75rem;
+}
 .searchContainer {
   display: flex;
   flex-wrap: wrap;
@@ -67,12 +74,12 @@
 
 .tile {
   position: relative;
-  width: 5rem;
+  width: 6rem;
   border: 1px solid #c0bebe;
   padding: 0.5rem;
   text-align: center;
   font-size: 9px;
-  height: 5rem;;
+  height: 6rem;;
 }
 
 .tileimg {

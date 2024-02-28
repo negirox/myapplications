@@ -23,7 +23,7 @@ export class SPHelpers implements ISPHelper {
         console.log(response);
         return response.ok ? true :false;
     }
-    public async getListData(url: string) {
+    public async getListData(url: string):Promise<any> {
         const response = await this._client.get(url, this._clientConfig);
         return await response.json();
     }
