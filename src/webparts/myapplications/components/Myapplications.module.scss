@@ -61,6 +61,9 @@
   gap: 1.2rem;
   padding: .635rem;
   max-height: 18.75rem;
+  scrollbar-width: thin;
+  overflow: auto;
+  scrollbar-color: #c0bebe;
 }
 .searchContainer {
   display: flex;
