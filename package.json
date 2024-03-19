@@ -24,7 +24,10 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "toastr": "^2.1.4",
-    "tslib": "2.3.1"
+    "tslib": "2.3.1",
+    "eslint": "^8.57.0",
+    "react-scripts": "3.0.1",
+    "react-sortablejs": "2.0.11"
   },
   "devDependencies": {
     "@microsoft/eslint-config-spfx": "1.16.1",
@@ -41,6 +44,7 @@
     "ajv": "^6.12.5",
     "eslint-plugin-react-hooks": "4.3.0",
     "gulp": "4.0.2",
-    "typescript": "4.5.5"
+    "typescript": "4.5.5",
+    "@types/sortablejs": "^1.15.7"
   }
 }

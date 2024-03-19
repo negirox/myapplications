@@ -34,12 +34,18 @@
   background-position: center;
   padding: 50px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  
 }
 .bannerTitle{
   color: #fff;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  
 }
 .bannerDescription{
   color: #fff;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  
 }
  .container {
   padding: 1.25rem;
@@ -54,6 +60,7 @@
   scrollbar-width: thin;
   overflow: auto;
   scrollbar-color: #c0bebe;
+  font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
 }
 .tileContainerMain {
   display: flex;
@@ -103,7 +110,7 @@
   position: absolute;
   top: 0;
   padding: 0.25rem;
-  left: 4rem;
+  left: 5.5rem;
 }
 .SaveAppButton{
   float: inline-end;

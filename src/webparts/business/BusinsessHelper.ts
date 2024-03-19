@@ -99,7 +99,7 @@ export class BusinessHelper implements IBusinessHelper {
                 }
             }
         }
-        userApplicationsToRender = userApptoRender.sort((a,b)=>a.order - b.order);
+        userApplicationsToRender = userApptoRender.sort((a,b)=> b.order - a.order);
         const applicationsToShow = applications.value.slice(0, defaultApplicationToShow);
         const response: ApplicatioRecords = {
             allApplications: Utility.sortArray(applications.value,'Title'),

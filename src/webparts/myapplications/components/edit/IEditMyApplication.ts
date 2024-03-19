@@ -6,7 +6,7 @@ export interface IEditMyApplication
 {
     webpartContext:WebPartContext
     hidePopup:()=>void;
-    loadorRefresh:()=>void;
+    loadorRefresh:(userApplications:Applications[])=>void;
     applicationlistName?: string;
     userApplicationlistName?: string;
     allapplications: Array<Applications>;

@@ -18,7 +18,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
   private _spHelper: ISPHelper;
   private _bussinessHelper: IBusinessHelper;
   private _backUp: Array<Applications>;
-  private _backUpApps: ApplicationResponse;
+  //private _backUpApps: ApplicationResponse;
   private dynamicId: string;
   constructor(props: IMyapplicationsProps) {
     super(props);
@@ -42,7 +42,7 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
   }
   async componentDidMount(): Promise<void> {
     const Allapplications = await this._spHelper.getApplications(this.props, 4999);
-    this._backUpApps = Allapplications;
+   // this._backUpApps = Allapplications;
     await this.LoadorRefreshApps(Allapplications);
     this._backUp = [...this.state.applicationListItems];
     console.log(this.dynamicId);
@@ -143,7 +143,11 @@ export default class Myapplications extends React.Component<IMyapplicationsProps
                       this.hidePopup
                     }
                     loadorRefresh={
-                      async () => { await this.LoadorRefreshApps(this._backUpApps); }
+                      (userApplicationListItems) => { 
+                        this.setState({
+                          userApplicationListItems: userApplicationListItems
+                        });
+                       }
                     }
                     allapplications={this.state.allapplications}
                     userApplicationListItems={this.state.userApplicationListItems}

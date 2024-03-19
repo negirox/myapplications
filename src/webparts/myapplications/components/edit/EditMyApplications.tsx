@@ -12,6 +12,7 @@ import { ISPHelper } from "../../helpers/ISPhelper";
 import * as toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import { IBusinessHelper } from "../../../business/IBusinessHelper";
+import { ReactSortable } from "react-sortablejs";
 /* import {
     SPHttpClient
 } from '@microsoft/sp-http'; */
@@ -40,12 +41,14 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
         this.handleDrop = this.handleDrop.bind(this);
         this.handleCheckBox = this.handleCheckBox.bind(this);
         this.SaveUI = this.SaveUI.bind(this);
+        this.SaveOrder = this.SaveOrder.bind(this);
     }
     async componentDidMount(): Promise<void> {
         const userApps = [...this.state.userApplicationListItems];
         for (let index = 0; index < userApps.length; index++) {
             const element = userApps[index];
             element.order = element.order ?? (index + 1)
+            element.id = element.Id;
             this.SetSelectedApps(element);
         }
         this.setState({
@@ -79,7 +82,7 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
             </section>
         )
     }
-    public async SaveUI():Promise<void> {
+    public async SaveUI(): Promise<void> {
         const loggedInUserRecord: UserApplications = JSON.parse(localStorage.getItem('loggedInUserRecord'));
         const postObj: UserApplicationsBase = this._bussinessHelper.getUserPrefrenceData(this.state.userApplicationListItems,
             this._adminApplications, this.state.applicationListItems, this._userMasterdata.value);
@@ -90,12 +93,12 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
                  "UserSelectedApplications": loggedInUserRecord.ApplicationOrder
              }; */
             const response = await this._spHelper.putUserApps(this.props, loggedInUserRecord.Id, postObj);
-            if(response){
+            if (response) {
                 this.props.hidePopup();
                 toastr.success("User prefrence saved successfully.");
-                this.props.loadorRefresh();
+                this.props.loadorRefresh(this.state.userApplicationListItems);
             }
-            else{
+            else {
                 this.props.hidePopup();
                 toastr.error("Something went wrong.");
             }
@@ -103,13 +106,13 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
         else {
             //create record
             postObj.Title = this.props.webpartContext.pageContext.user.email;
-            const response = await this._spHelper.saveUserApps(this.props,postObj);
-            if(response){
+            const response = await this._spHelper.saveUserApps(this.props, postObj);
+            if (response) {
                 this.props.hidePopup();
                 toastr.success("User prefrence saved successfully.");
-                this.props.loadorRefresh();
+                this.props.loadorRefresh(this.state.userApplicationListItems);
             }
-            else{
+            else {
                 this.props.hidePopup();
                 toastr.error("Something went wrong.");
             }
@@ -136,134 +139,68 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
                 return box;
             });
 
-            this.setState({ userApplicationListItems: newBoxState });
+            this.setState({ userApplicationListItems: Utility.sortArray(newBoxState, 'order') });
         }
     };
-    private SearchApplications(searchValue: string):void {
+    private SearchApplications(searchValue: string): void {
         this.SearchApps(searchValue);
     }
-    public SearchApps(searchValue: string):void {
+    public SearchApps(searchValue: string): void {
         if (searchValue.length > 0) {
-            const apps = this.state.applicationListItems.filter(x => x.Title.toUpperCase().indexOf(searchValue.toUpperCase()) > -1);
-            this.setState({ applicationListItems: apps });
+            const apps:Applications[] = [...this._backUp];
+            const searchedApps:Applications[]=[];
+            this.setState({ applicationListItems: searchedApps });
+            for (let index = 0; index < apps.length; index++) {
+                const element = apps[index];
+                if(element.Title.toUpperCase().indexOf(searchValue.toUpperCase()) > -1){
+                    if(this.state.userApplicationListItems.filter(x=>x.Id === element.Id).length > 0){
+                        element.isSelected = true;
+                    }
+                    else
+                      element.isSelected = false;
+                    searchedApps.push(element);
+                }
+            }
+            console.log(searchedApps);
+            this.setState({ applicationListItems: searchedApps });
         }
         else {
             this.setState({ applicationListItems: [...this._backUp] });
         }
     }
-    public handleCheckBox(ev?: React.ChangeEvent, isChecked?: boolean):void {
-        const checkboxId = ev.target.id;
-        const appId = Utility.GetIdFromString(checkboxId);
-        const application = this._backUp.filter((x) => x.Id === appId)[0];
-        const UserApplication = this.state.userApplicationListItems.filter((x) => x.Id === appId);
-        const newApps = [];
-        const newApplications: Applications[] = [...this._backUp];
-        if (UserApplication.length > 0) {
-            if (isChecked) {
-                const oldUserApps = [...this.state.userApplicationListItems];
-                if (application.order === undefined) {
-                    application.order = this.state.userApplicationListItems.length;
+    public handleCheckBox(ev?: any, isChecked?: boolean): void {
+        const checkBoxFor = ev.target.title;
+        //const appId = Utility.GetIdFromString(checkboxId);
+        //const application = this._backUp.filter((x) => x.Id === appId)[0];
+        let newApps: Applications[] = [...this.state.userApplicationListItems];
+        const newApplications: Applications[] = [...this.state.applicationListItems];
+        const UserApplication = this.state.userApplicationListItems.filter((x) => x.Title.toUpperCase() === checkBoxFor.toUpperCase());
+        if(isChecked){
+            if(UserApplication.length === 0){
+                const app = newApplications.filter(x=>x.Title.toUpperCase() === checkBoxFor.toUpperCase());
+                if(app.length > 0){
+                    app[0].isSelected = true;
+                    newApps.push({...app[0]});
                 }
-                const selectedApps = newApplications.filter(x => x.Id.toString() === application.Id.toString());
-                if (selectedApps.length > 0) {
-                    selectedApps[0].isSelected = isChecked;
-                    application.isSelected = isChecked;
-                }
-                else {
-                    selectedApps[0].isSelected = !isChecked;
-                    application.isSelected = !isChecked;
-                }
-                const newApps = oldUserApps.concat(application);
-                this.setState({
-                    userApplicationListItems: newApps,
-                    applicationListItems: newApplications
-                });
             }
-            else {
-                const oldUserApps = [...this.state.userApplicationListItems];
-                for (let index = 0; index < oldUserApps.length; index++) {
-                    const element = oldUserApps[index];
-                    if (element.Id !== appId) {
-                        newApps.push(element);
-                    }
-                    if (element.Id === appId) {
-                        const selectedApps = newApplications.filter(x => x.Id.toString() === element.Id.toString());
-                        if (selectedApps.length > 0) {
-                            selectedApps[0].isSelected = isChecked;
-                            element.isSelected = isChecked;
-                        }
-                    }
-                }
-                this.setState({
-                    userApplicationListItems: newApps,
-                    applicationListItems: newApplications
-                })
-            }
-
         }
-        else {
-            if (isChecked) {
-                const oldUserApps = [...this.state.userApplicationListItems];
-                if (application.order === undefined) {
-                    application.order = this.state.userApplicationListItems.length;
+        else{
+            if(UserApplication.length > 0){
+                const app = newApplications.filter(x=>x.Title.toUpperCase() === checkBoxFor.toUpperCase());
+                if(app.length > 0){
+                    app[0].isSelected = false;
+                    UserApplication[0].isSelected = false;
+                    newApps = newApps.filter(x=>x.isSelected === true);
                 }
-                const selectedApps = newApplications.filter(x => x.Id.toString() === application.Id.toString());
-                if (selectedApps.length > 0) {
-                    selectedApps[0].isSelected = isChecked;
-                    application.isSelected = isChecked;
-                }
-                else {
-                    selectedApps[0].isSelected = !isChecked;
-                    application.isSelected = !isChecked;
-                }
-                const newApps = oldUserApps.concat(application);
-                this.setState({
-                    userApplicationListItems: newApps,
-                    applicationListItems: newApplications
-                });
             }
-            else {
-                const oldUserApps = [...this.state.userApplicationListItems];
-                for (let index = 0; index < oldUserApps.length; index++) {
-                    const element = oldUserApps[index];
-                    if (element.Id !== appId) {
-                        newApps.push(element);
-                    }
-                    if (element.Id === appId) {
-                        const selectedApps = newApplications.filter(x => x.Id.toString() === element.Id.toString());
-                        if (selectedApps.length > 0) {
-                            selectedApps[0].isSelected = isChecked;
-                            element.isSelected = isChecked;
-                        }
-                    }
-                }
-                this.setState({
-                    userApplicationListItems: newApps,
-                    applicationListItems: newApplications
-                })
-            }
-
-            /*  const oldUserApps = [...this.state.userApplicationListItems];
-             if (application.order === undefined) {
-                 application.order = this.state.userApplicationListItems.length;
-             }
-             const selectedApps = newApplications.filter(x => x.Id.toString() === application.Id.toString());
-             if (selectedApps.length > 0) {
-                 selectedApps[0].isSelected = isChecked;
-                 application.isSelected = isChecked;
-             }
-             else {
-                 selectedApps[0].isSelected = !isChecked;
-                 application.isSelected = !isChecked;
-             }
-             const newApps = oldUserApps.concat(application);
-             this.setState({
-                 userApplicationListItems: newApps,
-                 applicationListItems: newApplications
-             }); */
         }
+      
+        this.setState({
+            userApplicationListItems: newApps,
+            applicationListItems: newApplications
+        })
     }
-    private SetSelectedApps(element: Applications):void {
+    private SetSelectedApps(element: Applications): void {
         const selectedApps = this.state.applicationListItems.filter(x => x.Id.toString() === element.Id.toString());
         if (selectedApps.length > 0) {
             selectedApps[0].isSelected = true;
@@ -274,6 +211,9 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
             element.isSelected = false;
         }
     }
+    private SaveOrder(newState: Applications[]):void{
+        this.setState({userApplicationListItems:newState});
+    }
     private LoadApplicationDashBoard(myPinnedApplication: string, isSearchBar: boolean = false): JSX.Element {
         return <div>
             <h3 className="mt-5">{myPinnedApplication}</h3>
@@ -281,15 +221,31 @@ export default class EditMyApplication extends React.Component<IEditMyApplicatio
             <div className={styles.tileContainer}>
                 {this.state.loading &&
                     <Spinner label={`Loading User Applications ...`} size={SpinnerSize.large} />}
-                {!this.state.loading && this.state.userApplicationListItems
-                    .sort((a, b) => a.order - b.order)
+                {/* {!this.state.loading && this.state.userApplicationListItems
                     .map(x => {
                         return (
                             ApplicationUI.renderTilesDragDrop(x, this.props.dashBoardBackGroundColor,
                                 this.handleDrag, this.handleDrop)
                         );
-                    })}
+                    })} */}
+                
             </div>
+            <ReactSortable
+                    filter=".addImageButtonContainer"
+                    dragClass="sortableDrag"
+                    className={styles.tileContainer}
+                    list={this.state.userApplicationListItems}
+                    setList={this.SaveOrder}
+                    animation={200}
+                    easing="ease-out"
+                >
+                  {!this.state.loading && this.state.userApplicationListItems
+                    .map(x => {
+                        return (
+                            ApplicationUI.renderTiles(x, this.props.dashBoardBackGroundColor)
+                        );
+                    })}
+                </ReactSortable>
         </div>;
     }
     private LoadApplicationDashBoardWithSearchBar(myPinnedApplication: string, isSearchBar: boolean = false): JSX.Element {

@@ -16,6 +16,7 @@ export interface UserMasterResponse {
 }
 export interface Applications {
     Id: number,
+    id:number,
     Title:string,
     IconURL: string,
     IsVisibleOnPage: boolean,
